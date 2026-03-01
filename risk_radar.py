@@ -6,7 +6,6 @@ Renders risk assessment results with progress bars.
 """
 import sys
 import io
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 import json
 from typing import Dict, List, Tuple
