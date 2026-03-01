@@ -21,10 +21,11 @@ AI agents run with elevated permissions and can:
 ## Features
 
 - 🔍 **Socket/Network Analysis** - Detect suspicious outbound connections
-- 🐛 **Vulnerability Scanning** - Check dependencies for known CVEs
+- 🐛 **Vulnerability Scanning** - Check dependencies for known CVEs (GitHub Advisory API)
 - 🚩 **Red Flag Detection** - Identify dangerous code patterns
 - 📊 **Risk Classification** - Classify skills as Safe/Low/Medium/High
 - 📋 **Standardized Reports** - Clear risk assessments with recommendations
+- ⚡ **Async Fetch** - Non-blocking vulnerability checks with local cache
 
 ## Quick Start
 

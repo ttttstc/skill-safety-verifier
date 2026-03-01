@@ -106,6 +106,22 @@ red_flags:
 | Medium | 10 |
 | Low | 5 |
 
+### GitHub Advisory API Integration
+
+使用 GitHub Advisory API 获取真实漏洞数据，不阻塞安装流程。
+
+**API**: `https://api.github.com/advisories`  
+**认证**: 无需 Token（匿名 60次/小时）  
+**TTL**: 本地缓存 24 小时
+
+**流程**:
+```
+1. 用户触发安装 → 立即返回 "安检中..."
+2. 后台并行: 克隆代码 + 查缓存 + 异步请求 API
+3. 缓存命中? Yes → 直接返回 | No → 等 API (超时 5s)
+4. 合并 Socket分析 + 代码模式 + 漏洞数据 → 呈现
+```
+
 ### Permission Scope Risk
 
 | Scope | Score |
