@@ -1,6 +1,6 @@
 # Skill Safety Verifier
 
-**[English](README.md) | [中文](README_zh.md)**
+**[English](README.md) | [Chinese](README_zh.md)**
 
 > Security-first skill vetting for AI agents. Use before installing any skill from ClawdHub, GitHub, or other sources.
 
