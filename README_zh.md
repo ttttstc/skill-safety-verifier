@@ -24,26 +24,86 @@ AI Agent 以高级权限运行，可以：
 
 ---
 
+## 前置依赖
+
+### Python 版本
+- Python 3.8 或更高
+
+### 必需依赖
+```bash
+# 方式 1: 通过 pip 安装
+pip install -r requirements.txt
+
+# 方式 2: 通过 setup.py 安装
+pip install -e .
+
+# 方式 3: 手动安装
+pip install requests>=2.28.0
+```
+
+### 可选依赖（开发用）
+```bash
+pip install pytest pytest-cov
+```
+
+---
+
 ## 快速开始
 
 ### 安装
 
+#### 方式 1: 克隆并安装
 ```bash
-# 通过 ClawdHub
-npx skills add ttttstc/skill-safety-verifier
-
-# 或直接克隆
 git clone https://github.com/ttttstc/skill-safety-verifier.git
+cd skill-safety-verifier
+pip install -e .
+```
+
+#### 方式 2: 通过 ClawdHub
+```bash
+npx skills add ttttstc/skill-safety-verifier
+```
+
+#### 方式 3: 直接下载使用
+```bash
+# 仅下载并使用
+wget https://raw.githubusercontent.com/ttttstc/skill-safety-verifier/main/analyzer.py
+wget https://raw.githubusercontent.com/ttttstc/skill-safety-verifier/main/risk_radar.py
 ```
 
 ### 使用
 
 ```bash
-# 分析一个 Skill
+# 方式 1: 安装后使用
+skill-safety-check /path/to/skill
+
+# 方式 2: 直接 Python 运行
 python analyzer.py /path/to/skill
+python3 analyzer.py /path/to/skill
 
 # 输出 JSON
 python analyzer.py /path/to/skill --json
+
+# 帮助
+python analyzer.py --help
+```
+
+---
+
+## 项目结构
+
+```
+skill-safety-verifier/
+├── bin/                      # 入口脚本
+│   └── skill-safety-check   # CLI 启动器
+├── analyzer.py               # 主分析器
+├── risk_radar.py             # Risk Radar 渲染器
+├── requirements.txt           # Python 依赖
+├── setup.py                  # 包配置
+├── SKILL.md                  # OpenClaw skill 定义
+├── README.md                 # 英文文档
+├── README_zh.md              # 中文文档
+└── LICENSE                  # MIT 许可证
 ```
 
 ---
@@ -118,6 +178,21 @@ skill-name - 风险评估
 
 ---
 
+## 配置
+
+### 缓存目录
+默认: `~/.cache/skill-safety/`
+
+### 缓存 TTL
+- Advisory 数据: 24 小时
+- Skill 依赖: 6 小时
+
+### GitHub API
+- 无需认证（60 次/小时）
+- 有认证: 5000 次/小时
+
+---
+
 ## 集成
 
 ### 与 ClawdHub 集成
@@ -125,6 +200,16 @@ skill-name - 风险评估
 ```bash
 # 安装时自动验证
 npx skills add <owner/repo> --verify
+```
+
+### 在你自己的流水线中
+
+```python
+from analyzer import analyze_skill
+
+result = analyze_skill('/path/to/skill')
+print(result['scores'])
+# {'network': 0, 'vuln': 0, 'permission': 25, 'total': 25}
 ```
 
 ---
@@ -135,6 +220,22 @@ npx skills add <owner/repo> --verify
 2. 阅读代码 - 自动检查不够，需要人工审查
 3. 最小权限 - 只授予必要的权限
 4. 隔离运行 - 在容器中运行高风险 Skill
+5. 监控日志 - 记录所有 Skill 活动
+
+---
+
+## 常见问题
+
+### "No module named 'requests'"
+```bash
+pip install requests
+```
+
+### "SSL certificate verify failed"
+默认使用 SSL 验证。如果遇到问题，可以禁用 SSL 验证（生产环境不推荐）。
+
+### "API rate limit exceeded"
+等待一小时或使用 GitHub Token 提高速率限制。
 
 ---
 
@@ -142,6 +243,7 @@ npx skills add <owner/repo> --verify
 
 - ClawdHub (https://clawhub.com) - Skill 市场
 - GitHub Advisory API (https://api.github.com/advisories)
+- OpenClaw 文档 (https://docs.openclaw.ai)
 
 ---
 

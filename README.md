@@ -24,26 +24,86 @@ AI agents run with elevated permissions and can:
 
 ---
 
+## Prerequisites
+
+### Python Version
+- Python 3.8 or higher
+
+### Required Dependencies
+```bash
+# Option 1: Install via pip
+pip install -r requirements.txt
+
+# Option 2: Install via setup.py
+pip install -e .
+
+# Option 3: Manual install
+pip install requests>=2.28.0
+```
+
+### Optional (for development)
+```bash
+pip install pytest pytest-cov
+```
+
+---
+
 ## Quick Start
 
 ### Installation
 
+#### Option 1: Clone and install
 ```bash
-# Via ClawdHub
-npx skills add ttttstc/skill-safety-verifier
-
-# Or clone directly
 git clone https://github.com/ttttstc/skill-safety-verifier.git
+cd skill-safety-verifier
+pip install -e .
+```
+
+#### Option 2: Via ClawdHub
+```bash
+npx skills add ttttstc/skill-safety-verifier
+```
+
+#### Option 3: Direct download
+```bash
+# Just download and use
+wget https://raw.githubusercontent.com/ttttstc/skill-safety-verifier/main/analyzer.py
+wget https://raw.githubusercontent.com/ttttstc/skill-safety-verifier/main/risk_radar.py
 ```
 
 ### Usage
 
 ```bash
-# Analyze a skill
+# Option 1: After pip install
+skill-safety-check /path/to/skill
+
+# Option 2: Direct Python
 python analyzer.py /path/to/skill
+python3 analyzer.py /path/to/skill
 
 # Output JSON
 python analyzer.py /path/to/skill --json
+
+# Help
+python analyzer.py --help
+```
+
+---
+
+## Project Structure
+
+```
+skill-safety-verifier/
+├── bin/                      # Entry point scripts
+│   └── skill-safety-check   # CLI launcher
+├── analyzer.py               # Main analyzer
+├── risk_radar.py             # Risk radar renderer
+├── requirements.txt           # Python dependencies
+├── setup.py                  # Package configuration
+├── SKILL.md                  # OpenClaw skill definition
+├── README.md                 # English documentation
+├── README_zh.md              # Chinese documentation
+└── LICENSE                  # MIT license
 ```
 
 ---
@@ -118,6 +178,21 @@ Recommendation: Review code before install
 
 ---
 
+## Configuration
+
+### Cache Directory
+Default: `~/.cache/skill-safety/`
+
+### Cache TTL
+- Advisory data: 24 hours
+- Skill dependencies: 6 hours
+
+### GitHub API
+- No authentication required (60 requests/hour)
+- With authentication: 5000 requests/hour
+
+---
+
 ## Integration
 
 ### With ClawdHub
@@ -125,6 +200,16 @@ Recommendation: Review code before install
 ```bash
 # Install with auto-verification
 npx skills add <owner/repo> --verify
+```
+
+### In Your Own Pipeline
+
+```python
+from analyzer import analyze_skill
+
+result = analyze_skill('/path/to/skill')
+print(result['scores'])
+# {'network': 0, 'vuln': 0, 'permission': 25, 'total': 25}
 ```
 
 ---
@@ -135,6 +220,22 @@ npx skills add <owner/repo> --verify
 2. Read the code - Automated checks aren't enough
 3. Least privilege - Only grant necessary permissions
 4. Isolate - Run high-risk skills in containers
+5. Monitor - Log all skill activity
+
+---
+
+## Troubleshooting
+
+### "No module named 'requests'"
+```bash
+pip install requests
+```
+
+### "SSL certificate verify failed"
+The analyzer uses SSL verification by default. If you encounter issues, you can disable SSL verification (not recommended for production).
+
+### "API rate limit exceeded"
+Wait an hour or use a GitHub token for higher rate limits.
 
 ---
 
@@ -142,6 +243,7 @@ npx skills add <owner/repo> --verify
 
 - ClawdHub (https://clawhub.com) - Skill marketplace
 - GitHub Advisory API (https://api.github.com/advisories)
+- OpenClaw Docs (https://docs.openclaw.ai)
 
 ---
 
