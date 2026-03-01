@@ -113,36 +113,60 @@ skill-safety-check --verify --skill-name <skill-name>
 ### Safe Skill ✅
 
 ```
-✅ skill-name - Risk Assessment Complete
+✅ skill-name - Risk Assessment
 
-┌─────────────────────────────────┐
-│  🟢 LOW RISK                   │
-│  Socket Alerts: 0               │
-│  Snyk Issues: 0                │
-│  Code Patterns: Clean          │
-└─────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│  📊 Risk Radar                          │
+├─────────────────────────────────────────┤
+│  Network      [░░░░░░░░░░░]  0/50  🟢 │
+│  Vulnerabil. [░░░░░░░░░░░░]  0/25  🟢 │
+│  Permissions  [░░░░░░░░░░░░]  0/50  🟢 │
+│  ─────────────────────────────────────  │
+│  TOTAL        [░░░░░░░░░░░░]  0/100 🟢 │
+├─────────────────────────────────────────┤
+│  Recommendation: ✅ Safe to install     │
+└─────────────────────────────────────────┘
+```
 
-Recommendation: Safe to install and use.
+### Medium Risk Skill ⚠️
+
+```
+⚠️ skill-name - Risk Assessment
+
+┌─────────────────────────────────────────┐
+│  📊 Risk Radar                          │
+├─────────────────────────────────────────┤
+│  Network      [████░░░░░░░] 20/50 🟡 │
+│  Vulnerabil. [██░░░░░░░░░░]  5/25 🟢 │
+│  Permissions  [█████░░░░░░░] 25/50 🟠 │
+│  ─────────────────────────────────────  │
+│  TOTAL        [████░░░░░░░] 50/100 🟠 │
+├─────────────────────────────────────────┤
+│  ⚠️ Warnings: Network calls detected   │
+│  Recommendation: Review before install  │
+└─────────────────────────────────────────┘
 ```
 
 ### High Risk Skill 🚫
 
 ```
-🚫 skill-name - Risk Assessment Complete
+🚫 skill-name - Risk Assessment
 
-┌─────────────────────────────────┐
-│  🔴 HIGH RISK                   │
-│  Socket Alerts: 5               │
-│  Snyk Issues: 3 (Critical)      │
-│  Red Flags: Command execution    │
-└─────────────────────────────────┘
-
-🚨 DO NOT INSTALL
-
-Reasons:
-1. Multiple critical vulnerabilities found
-2. Executes shell commands
-3. No input sanitization
+┌─────────────────────────────────────────┐
+│  📊 Risk Radar                          │
+├─────────────────────────────────────────┤
+│  Network      [██████████] 50/50 🔴 │
+│  Vulnerabil. [████████████] 25/25 🔴 │
+│  Permissions  [██████████] 50/50 🔴 │
+│  ─────────────────────────────────────  │
+│  TOTAL        [██████████]100/100 🔴 │
+├─────────────────────────────────────────┤
+│  🚨 DO NOT INSTALL                     │
+│  Reasons:                               │
+│  1. Multiple critical vulnerabilities   │
+│  2. Executes shell commands             │
+│  3. No input sanitization               │
+└─────────────────────────────────────────┘
 ```
 
 ## Integration

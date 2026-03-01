@@ -177,6 +177,44 @@ User Decision
 
 ## Output Format
 
+### Progress Bar Style (Recommended)
+
+```
+✅ weather - Risk Assessment
+
+┌─────────────────────────────────────────┐
+│  📊 Risk Radar                          │
+├─────────────────────────────────────────┤
+│  Network      [░░░░░░░░░░░]  0/50  🟢 │
+│  Vulnerabil. [░░░░░░░░░░░░]  0/25  🟢 │
+│  Permissions  [░░░░░░░░░░░░]  0/50  🟢 │
+│  ─────────────────────────────────────  │
+│  TOTAL        [░░░░░░░░░░░░]  0/100 🟢 │
+├─────────────────────────────────────────┤
+│  Dependencies: curl, wttr.in            │
+│  Recommendation: ✅ Safe to install     │
+└─────────────────────────────────────────┘
+```
+
+### Implementation Logic
+
+```python
+# Progress bar rendering
+def render_bar(score, max_score, label, width=10):
+    percent = score / max_score
+    filled = int(percent * width)
+    bar = '█' * filled + '░' * (width - filled)
+    emoji = get_risk_emoji(percent)
+    return f"  {label:<12} [{bar}] {score}/{max_score} {emoji}"
+
+# Color mapping
+def get_risk_emoji(percent):
+    if percent < 0.2: return '🟢'
+    if percent < 0.5: return '🟡'
+    if percent < 0.8: return '🟠'
+    return '🔴'
+```
+
 ### Safe Skill
 
 ```
