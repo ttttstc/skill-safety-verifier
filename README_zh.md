@@ -6,6 +6,8 @@
   <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="许可证">
 </p>
 
+**[English](README.md) | [中文](README_zh.md)**
+
 > AI 智能体的安全审查工具。在安装任何来自 ClawdHub、GitHub 或其他来源的技能前进行安全检查。
 
 ## 为什么重要

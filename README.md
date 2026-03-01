@@ -6,6 +6,8 @@
   <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License">
 </p>
 
+**[English](README.md) | [中文](README_zh.md)**
+
 > Security-first skill vetting for AI agents. Use before installing any skill from ClawdHub, GitHub, or other sources.
 
 ## Why This Matters
