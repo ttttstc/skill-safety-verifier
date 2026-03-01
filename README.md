@@ -16,12 +16,11 @@ AI agents run with elevated permissions and can:
 
 ## Features
 
-- Socket/Network Analysis - Detect suspicious outbound connections
-- Vulnerability Scanning - Check dependencies for known CVEs (GitHub Advisory API)
-- Red Flag Detection - Identify dangerous code patterns
+- Code Pattern Scanning - Detect dangerous code (exec/eval/subprocess)
+- GitHub Advisory API - Check dependencies for known CVEs
+- Permission Analysis - Analyze required permissions from config
 - Risk Classification - Classify skills as Safe/Low/Medium/High
-- Standardized Reports - Clear risk assessments with recommendations
-- Async Fetch - Non-blocking vulnerability checks with local cache
+- Risk Radar Visualization - Progress bar with color-coded scores
 
 ---
 
@@ -40,11 +39,11 @@ git clone https://github.com/ttttstc/skill-safety-verifier.git
 ### Usage
 
 ```bash
-# Check a skill before installation
-skill-safety-check --source github.com/user/skill-repo
+# Analyze a skill
+python analyzer.py /path/to/skill
 
-# Verify an already installed skill
-skill-safety-check --verify --skill-name <skill-name>
+# Output JSON
+python analyzer.py /path/to/skill --json
 ```
 
 ---
@@ -52,32 +51,25 @@ skill-safety-check --verify --skill-name <skill-name>
 ## Workflow
 
 ```
-User Request
+User triggers installation
     |
     v
-1. Fetch Skill
-   - Clone/Extract
-   - Read SKILL.md
+1. Clone skill repository
     |
     v
-2. Parallel Scan
-   - Socket Check (outbound connections)
-   - Vuln Scan (GitHub Advisory API)
-   - Code Patterns (dangerous functions)
+2. Parallel scanning:
+   - Scan code patterns (exec/eval/subprocess)
+   - Check GitHub Advisory API
+   - Analyze permissions
     |
     v
-3. Risk Score
-   - Calculate total (Network + Vuln + Permission)
-   - Classify level
+3. Calculate risk scores
     |
     v
-4. Present Result
-   - Risk Radar
-   - Warnings
-   - Recommendation
+4. Render Risk Radar
     |
     v
-User Decision
+User decision
 ```
 
 ---
@@ -90,76 +82,6 @@ User Decision
 | Low | 11-30 | Yellow | Install with caution |
 | Medium | 31-60 | Orange | Review code first |
 | High | 61-100 | Red | Do not install |
-
-## Assessment Criteria
-
-### Socket/Network Risk
-
-| Alert Count | Score |
-|-------------|-------|
-| 0 | 0 |
-| 1-2 | 10 |
-| 3-5 | 25 |
-| >5 | 50 |
-
-### Code Vulnerability Risk
-
-| Severity | Score |
-|----------|-------|
-| Critical | 25 |
-| High | 15 |
-| Medium | 10 |
-| Low | 5 |
-
-### Permission Scope Risk
-
-| Scope | Score |
-|-------|-------|
-| Read-only | 0 |
-| Network calls | 10 |
-| File write | 15 |
-| Command execution | 25 |
-| Full system access | 50 |
-
-## Red Flags
-
-### Network
-- Suspicious domains (non-standard TLDs)
-- Hardcoded IP addresses
-- DNS lookups to unknown domains
-- Excessive outbound connections
-
-### Execution
-- os.system() / subprocess without sanitization
-- eval() / exec() usage
-- Shell injection patterns
-- Download and execute code
-
-### Data
-- Reading sensitive environment variables
-- Exfiltrating files
-- Logging keystrokes
-- Credential harvesting
-
-## GitHub Advisory API Integration
-
-```
-1. User triggers installation
-2. Immediately return "Scanning..."
-   Parallel:
-   - Clone skill code
-   - Check local cache
-   - Async API request to GitHub Advisory
-3. Cache hit? Yes/No
-4. Merge results - Present Risk Radar
-```
-
-### Cache Strategy
-
-| Data | TTL | Location |
-|------|-----|----------|
-| Full Advisory | 24h | ~/.cache/skill-safety/advisory.json |
-| Skill dependencies | 6h | ~/.cache/skill-safety/{skill}.json |
 
 ---
 
@@ -187,29 +109,11 @@ skill-name - Risk Assessment
 Risk Radar:
   Network      20/50 Yellow
   Vulnerabil.  5/25  Green
-  Permissions  25/50 Orange
+  Permissions 25/50 Orange
   Total        50/100 Orange
 
 Warning: Network calls detected
 Recommendation: Review code before install
-```
-
-### High Risk Skill
-
-```
-skill-name - Risk Assessment
-
-Risk Radar:
-  Network      50/50 Red
-  Vulnerabil. 25/25 Red
-  Permissions 50/50 Red
-  Total       100/100 Red
-
-DO NOT INSTALL
-Reasons:
-1. Multiple critical vulnerabilities
-2. Executes shell commands
-3. No input sanitization
 ```
 
 ---
@@ -223,18 +127,6 @@ Reasons:
 npx skills add <owner/repo> --verify
 ```
 
-### With OpenClaw
-
-The verifier runs automatically before skill installation when enabled in config:
-
-```yaml
-# .openclaw/config.yaml
-skill_safety:
-  enabled: true
-  auto_check: true
-  block_high_risk: false
-```
-
 ---
 
 ## Best Practices
@@ -243,15 +135,13 @@ skill_safety:
 2. Read the code - Automated checks aren't enough
 3. Least privilege - Only grant necessary permissions
 4. Isolate - Run high-risk skills in containers
-5. Monitor - Log all skill activity
 
 ---
 
 ## Related
 
 - ClawdHub (https://clawhub.com) - Skill marketplace
-- OpenClaw Docs (https://docs.openclaw.ai) - Platform documentation
-- Skill Writing Guide (https://docs.openclaw.ai/skills/write) - How to write safe skills
+- GitHub Advisory API (https://api.github.com/advisories)
 
 ---
 
