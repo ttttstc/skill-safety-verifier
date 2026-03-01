@@ -27,6 +27,8 @@ AI agents run with elevated permissions and can:
 - 📋 **Standardized Reports** - Clear risk assessments with recommendations
 - ⚡ **Async Fetch** - Non-blocking vulnerability checks with local cache
 
+---
+
 ## Quick Start
 
 ### Installation
@@ -48,6 +50,59 @@ skill-safety-check --source github.com/user/skill-repo
 # Verify an already installed skill  
 skill-safety-check --verify --skill-name <skill-name>
 ```
+
+---
+
+## Workflow
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        SKILL SAFETY VERIFIER FLOW                       │
+└─────────────────────────────────────────────────────────────────────────┘
+
+    User Request
+         │
+         ▼
+┌─────────────────────┐
+│  1. Fetch Skill    │
+│  - Clone/Extract    │
+│  - Read SKILL.md    │
+└─────────────────────┘
+         │
+         ▼
+┌─────────────────────┐
+│  2. Parallel Scan  │
+│  ┌───────────────┐  │
+│  │ Socket Check  │  │  ← Check outbound connections
+│  └───────────────┘  │
+│  ┌───────────────┐  │
+│  │ Vuln Scan     │  │  ← Query GitHub Advisory API
+│  └───────────────┘  │
+│  ┌───────────────┐  │
+│  │ Code Patterns │  │  ← Scan dangerous functions
+│  └───────────────┘  │
+└─────────────────────┘
+         │
+         ▼
+┌─────────────────────┐
+│  3. Risk Score     │
+│  - Calculate total │  ← Network + Vuln + Permission
+│  - Classify level  │
+└─────────────────────┘
+         │
+         ▼
+┌─────────────────────┐
+│  4. Present Result │
+│  - Risk Radar      │
+│  - Warnings       │
+│  - Recommendation │
+└─────────────────────┘
+         │
+         ▼
+    User Decision
+```
+
+---
 
 ## Risk Classification
 
@@ -108,6 +163,40 @@ skill-safety-check --verify --skill-name <skill-name>
 - Logging keystrokes
 - Credential harvesting
 
+## GitHub Advisory API Integration
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                      ASYNC FETCH + CACHE FLOW                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+1. User triggers installation
+         │
+         ▼
+2. IMMEDIATELY return "Scanning..."
+   PARALLEL:
+   ├── Clone skill code
+   ├── Check local cache
+   └── Async API request to GitHub Advisory
+         │
+         ▼
+3. Cache hit?
+   ├─ Yes → Return immediately
+   └─ No  → Wait for API (timeout 5s)
+         │
+         ▼
+4. Merge results → Present Risk Radar
+```
+
+### Cache Strategy
+
+| Data | TTL | Location |
+|------|-----|----------|
+| Full Advisory | 24h | `~/.cache/skill-safety/advisory.json` |
+| Skill dependencies | 6h | `~/.cache/skill-safety/{skill}.json` |
+
+---
+
 ## Output Examples
 
 ### Safe Skill ✅
@@ -137,10 +226,10 @@ skill-safety-check --verify --skill-name <skill-name>
 │  📊 Risk Radar                          │
 ├─────────────────────────────────────────┤
 │  Network      [████░░░░░░░] 20/50 🟡 │
-│  Vulnerabil. [██░░░░░░░░░░]  5/25 🟢 │
+│  Vulnerabil. [██░░░░░░░░░░░]  5/25 🟢 │
 │  Permissions  [█████░░░░░░░] 25/50 🟠 │
 │  ─────────────────────────────────────  │
-│  TOTAL        [████░░░░░░░] 50/100 🟠 │
+│  TOTAL        [████░░░░░░░░░░] 50/100 🟠 │
 ├─────────────────────────────────────────┤
 │  ⚠️ Warnings: Network calls detected   │
 │  Recommendation: Review before install  │
@@ -169,6 +258,8 @@ skill-safety-check --verify --skill-name <skill-name>
 └─────────────────────────────────────────┘
 ```
 
+---
+
 ## Integration
 
 ### With ClawdHub
@@ -190,6 +281,8 @@ skill_safety:
   block_high_risk: false
 ```
 
+---
+
 ## Best Practices
 
 1. **Always verify** - Never install unvetted skills
@@ -198,11 +291,19 @@ skill_safety:
 4. **Isolate** - Run high-risk skills in containers
 5. **Monitor** - Log all skill activity
 
+---
+
 ## Related
 
 - [ClawdHub](https://clawhub.com) - Skill marketplace
 - [OpenClaw Docs](https://docs.openclaw.ai) - Platform documentation
 - [Skill Writing Guide](https://docs.openclaw.ai/skills/write) - How to write safe skills
+
+---
+
+## 中文版
+
+See [README_zh.md](README_zh.md) for Chinese documentation.
 
 ## License
 
